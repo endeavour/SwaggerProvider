@@ -48,6 +48,7 @@ type DefinitionPropertyType =
     | Float
     | Double
     | String
+    | Password
     | Date
     | DateTime
     | Enum of values:string[]
@@ -82,6 +83,7 @@ type DefinitionPropertyType =
                     match format.AsString() with
                     | "date" -> Date
                     | "date-time" -> DateTime
+                    | "password" -> Password
                     | _ -> String
             | "array" ->
                 Array (DefinitionPropertyType.Parse obj?items)
@@ -238,8 +240,10 @@ type SwaggerSchema =
         {
             Info = InfoObject.Parse(obj?info)
             Tags =
-                obj?tags.AsArray()
-                |> Array.map TagObject.Parse
+                match obj.TryGetProperty("tags") with                
+                | Some(JsonValue.Array(xs)) ->
+                  xs |> Array.map TagObject.Parse
+                | _ -> [||]
             Operations =
                 obj?paths.Properties
                 |> Array.map (fun (path, pathObj) ->
