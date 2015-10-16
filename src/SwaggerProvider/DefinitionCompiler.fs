@@ -45,6 +45,7 @@ type DefinitionCompiler (schema:SwaggerSchema) =
         | Double, true    -> typeof<double>
         | Double, false   -> typeof<Option<double>>
         | String, _       -> typeof<string>
+        | Password, _     -> typeof<string>
         | Date, true | DateTime, true   -> typeof<DateTime>
         | Date, false | DateTime, false -> typeof<Option<DateTime>>
         | Enum vals, _ -> typeof<string> //TODO: find better type
